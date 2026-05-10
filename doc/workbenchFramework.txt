@@ -1,0 +1,4 @@
+
+workbench 中挂载 editor容器， 
+editors 通过类实例来创建，而不是一个 vue 组件。 
+tabManager 控制新的editor实例 的 销毁，切换， 挂载。 

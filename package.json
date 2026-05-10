@@ -1,0 +1,78 @@
+{
+  "name": "obsidian-lan-sync-bridge",
+  "productName": "Obsidian LAN Sync Bridge",
+  "version": "0.1.0",
+  "description": "Local network sync bridge for Obsidian vaults via WebDAV",
+  "main": ".vite/build/main.js",
+  "scripts": {
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish",
+    "lint": "eslint --ext .ts,.tsx .",
+    "start:forge": "electron-forge start",
+    "watch-main": "nodemon --watch src --ext ts --exec \"npm run start:forge\"",
+    "dev": "concurrently \"vite\" \"npm:watch-main\""
+  },
+  "keywords": [],
+  "author": {
+    "name": "Nanyian",
+    "email": "104672400+NAOXUAN4@users.noreply.github.com"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@electron-forge/cli": "^7.8.3",
+    "@electron-forge/maker-deb": "^7.10.2",
+    "@electron-forge/maker-rpm": "^7.10.2",
+    "@electron-forge/maker-squirrel": "^7.10.2",
+    "@electron-forge/maker-zip": "^7.10.2",
+    "@electron-forge/plugin-auto-unpack-natives": "^7.10.2",
+    "@electron-forge/plugin-fuses": "^7.10.2",
+    "@electron-forge/plugin-vite": "^7.10.2",
+    "@electron/fuses": "^1.8.0",
+    "@types/electron-squirrel-startup": "^1.0.2",
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
+    "birpc": "^4.0.0",
+    "concurrently": "^9.2.1",
+    "electron": "^39.2.7",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.4",
+    "hookable": "^6.0.1",
+    "nodemon": "^3.1.11",
+    "perfect-debounce": "^2.0.0",
+    "prettier": "^3.6.2",
+    "prettier-plugin-tailwindcss": "^0.7.2",
+    "sass-embedded": "^1.93.3",
+    "typescript": "~4.5.4",
+    "vite": "^7.3.0"
+  },
+  "dependencies": {
+    "@fluentui/web-components": "^2.6.1",
+    "@tailwindcss/vite": "^4.1.18",
+    "@vitejs/plugin-vue": "^6.0.3",
+    "@xterm/addon-fit": "^0.10.0",
+    "@xterm/xterm": "^5.5.0",
+    "axios": "^1.13.4",
+    "electron-squirrel-startup": "^1.0.1",
+    "iconv-lite": "^0.7.0",
+    "lucide-vue-next": "^0.562.0",
+    "pinia": "latest",
+    "tailwindcss": "^4.1.18",
+    "tslib": "^2.8.1",
+    "vue": "latest",
+    "vue-demi": "latest",
+    "wind-stream-ui": "^1.0.3"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "electron",
+      "@parcel/watcher",
+      "electron-winstaller",
+      "esbuild",
+      "vue-demi"
+    ]
+  }
+}

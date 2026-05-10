@@ -1,0 +1,41 @@
+@import 'tailwindcss';
+
+:root {
+  --text-base: oklch(0.2 0.02 260);
+  --text-muted: oklch(0.55 0.05 260);
+  --text-inverted: oklch(0.98 0 000);
+  --text-brand: oklch(0.3785 0.1954 263.23);
+}
+
+.dark {
+  --text-base: oklch(0.95 0.01 260);
+  --text-muted: oklch(0.65 0.03 260);
+  --text-inverted: oklch(0.1 0.05 260);
+  --text-brand: oklch(0.3785 0.1954 263.23);
+}
+
+@theme {
+  --color-neon: #b00b69;
+
+  --color-brand-500: --text-brand;
+
+  --color-text-base: var(--text-base);
+  --color-text-muted: var(--text-muted);
+  --color-text-inverted: var(--text-inverted);
+  --color-text-brand: var(--text-brand);
+
+  /* 2. 定义字体 */
+  --font-display: 'Oswald', sans-serif;
+
+  /* 3. 定义断点 */
+  --breakpoint-3xl: 1920px;
+
+  /* 4. 定义间距 */
+  --spacing-128: 32rem;
+
+  --background-image-cyber-glow: radial-gradient(
+    circle at -10% -10%,
+    rgba(0, 47, 167, 0.15) 0%,
+    /* transparent 120% */ rgba(0, 47, 167, 0.15) 0%
+  );
+}
