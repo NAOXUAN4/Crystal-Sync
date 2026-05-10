@@ -1,5 +1,7 @@
-import { WebDAVServer, PhysicalFileSystem } from 'webdav-server/lib/index.v2';
+import { WebDAVServer } from 'webdav-server/lib/index.v2';
 import { networkInterfaces } from 'os';
+import { ConflictFileSystem, ConflictEvent } from './conflict-file-system';
+import { SyncRecordStore } from './sync-record-store';
 
 export interface WebDAVStatus {
   running: boolean;
@@ -8,7 +10,10 @@ export interface WebDAVStatus {
   localIPs: string[];
 }
 
+export type ConflictHandler = (event: ConflictEvent) => void;
+
 let server: WebDAVServer | null = null;
+let conflictFS: ConflictFileSystem | null = null;
 let currentPort = 8080;
 let currentVaultPath = '';
 
@@ -34,27 +39,36 @@ export function getStatus(): WebDAVStatus {
   };
 }
 
-export async function startServer(vaultPath: string, port: number = 8080): Promise<WebDAVStatus> {
+export async function startServer(
+  vaultPath: string,
+  port: number = 8080,
+  onConflict?: ConflictHandler,
+): Promise<WebDAVStatus> {
   if (server) {
     await stopServer();
   }
 
-  const fileSystem = new PhysicalFileSystem(vaultPath);
+  const syncStore = new SyncRecordStore(vaultPath);
+  conflictFS = new ConflictFileSystem(vaultPath, syncStore);
+
+  if (onConflict) {
+    conflictFS.setOnConflict(onConflict);
+  }
+
   server = new WebDAVServer({
-    rootFileSystem: fileSystem,
+    rootFileSystem: conflictFS,
     port,
     requireAuthentification: false,
     serverName: 'Obsidian LAN Sync Bridge',
   });
 
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     server!.start(port, () => {
       currentPort = port;
       currentVaultPath = vaultPath;
       console.log(`WebDAV server started on port ${port}, serving ${vaultPath}`);
       resolve(getStatus());
     });
-    // Fallback timeout in case start callback never fires
     setTimeout(() => {
       if (server) {
         currentPort = port;
@@ -71,13 +85,14 @@ export async function stopServer(): Promise<void> {
   return new Promise((resolve) => {
     server!.stop(() => {
       server = null;
+      conflictFS = null;
       currentVaultPath = '';
       console.log('WebDAV server stopped');
       resolve();
     });
-    // Fallback
     setTimeout(() => {
       server = null;
+      conflictFS = null;
       currentVaultPath = '';
       resolve();
     }, 1000);

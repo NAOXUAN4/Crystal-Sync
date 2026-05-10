@@ -64,7 +64,9 @@ export function registerIPCHandlers(mainWindow: BrowserWindow) {
 
   // webdav
   ipcMain.handle('webdav:start', async (_event, vaultPath: string, port?: number) => {
-    const status = await startServer(vaultPath, port || 8080);
+    const status = await startServer(vaultPath, port || 8080, (conflict) => {
+      mainWindow.webContents.send('sync:conflict', conflict);
+    });
     mainWindow.webContents.send('webdav:statusChanged', status);
     return { ok: true, status };
   });
