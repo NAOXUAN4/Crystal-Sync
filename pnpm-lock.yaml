@@ -50,6 +50,9 @@ importers:
       vue-demi:
         specifier: latest
         version: 0.14.10(vue@3.5.34(typescript@4.5.5))
+      webdav-server:
+        specifier: ^2.6.2
+        version: 2.6.2
       wind-stream-ui:
         specifier: ^1.0.3
         version: 1.0.3(vue@3.5.34(typescript@4.5.5))
@@ -3290,6 +3293,10 @@ packages:
     engines: {node: '>=14.0.0'}
     hasBin: true
 
+  sax@1.6.0:
+    resolution: {integrity: sha512-6R3J5M4AcbtLUdZmRv2SygeVaM7IhrLXu9BmnOGmmACak8fiUtOsYNWUS4uK7upbmHIBbLBeFeI//477BKLBzA==}
+    engines: {node: '>=11.0.0'}
+
   schema-utils@4.3.3:
     resolution: {integrity: sha512-eflK8wEtyOE6+hsaRVPxvUKYCpRgzLqDTb8krvAsRIwOGlHoSgYLgBXoubGgLd2fT41/OUYdb48v4k4WWHQurA==}
     engines: {node: '>= 10.13.0'}
@@ -3774,6 +3781,10 @@ packages:
   wcwidth@1.0.1:
     resolution: {integrity: sha512-XHPEwS0q6TaxcvG85+8EYkbiCux2XtWG2mkc47Ng2A77BQu9+DqIOJldST4HgPkuea7dvKSj5VgX3P1d4rW8Tg==}
 
+  webdav-server@2.6.2:
+    resolution: {integrity: sha512-0iHdrOzlKGFD96bTvPF8IIEfxw9Q7jB5LqWqhjyBYsofD6T6mOYqWtAvR88VY9Mq0xeg8bCRHC2Vifc9iuTYuw==}
+    engines: {node: '>= 4'}
+
   webidl-conversions@3.0.1:
     resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
 
@@ -3842,6 +3853,14 @@ packages:
 
   wrappy@1.0.2:
     resolution: {integrity: sha512-l4Sp/DRseor9wL6EvV2+TuQn63dMkPjZ/sp9XkghTEbV9KlPS1xUsZ3u7/IQO4wxtcFB4bgpQPRcR3QCvezPcQ==}
+
+  xml-js-builder@1.0.3:
+    resolution: {integrity: sha512-BoLgG/glT45M0jK5PGh9h+iGrQxa8jJk9ofR63GroRifl2tbGB3/yYiVY3wQWHrZgWWfl9+7fhEB/VoD9mWnSg==}
+    engines: {node: '>= 4'}
+
+  xml-js@1.6.11:
+    resolution: {integrity: sha512-7rVi2KMfwfWFl+GpPg6m80IVMWXLRjO+PxTq7V2CDhoGak0wzYzFgUY2m4XJ47OGdXd8eLE8EmwfAmdjw7lC1g==}
+    hasBin: true
 
   xmlbuilder@15.1.1:
     resolution: {integrity: sha512-yMqGBqtXyeN1e3TGYvgNgDVZ3j84W4cwkOXQswghol6APgZWaff9lnbvN7MHYJOiXsvGPXtjTYJEiC9J2wv9Eg==}
@@ -7368,6 +7387,8 @@ snapshots:
       '@parcel/watcher': 2.5.4
     optional: true
 
+  sax@1.6.0: {}
+
   schema-utils@4.3.3:
     dependencies:
       '@types/json-schema': 7.0.15
@@ -7843,6 +7864,11 @@ snapshots:
     dependencies:
       defaults: 1.0.4
 
+  webdav-server@2.6.2:
+    dependencies:
+      mime-types: 2.1.35
+      xml-js-builder: 1.0.3
+
   webidl-conversions@3.0.1: {}
 
   webpack-sources@3.3.3: {}
@@ -7965,6 +7991,14 @@ snapshots:
       strip-ansi: 7.1.2
 
   wrappy@1.0.2: {}
+
+  xml-js-builder@1.0.3:
+    dependencies:
+      xml-js: 1.6.11
+
+  xml-js@1.6.11:
+    dependencies:
+      sax: 1.6.0
 
   xmlbuilder@15.1.1: {}
 

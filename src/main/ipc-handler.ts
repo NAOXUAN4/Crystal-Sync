@@ -1,16 +1,16 @@
 import { ipcMain, BrowserWindow, app } from 'electron';
 import { shellExec, getCurrentChildProcess } from './service/shell-service';
+import { startServer, stopServer, getStatus } from './service/webdav-service';
 
 export function registerIPCHandlers(mainWindow: BrowserWindow) {
   /// --------------------------------------- invoke -----------------------------------
 
-  // 'run command'
+  // shell
   ipcMain.handle('shell:exec', async (_event, command: string) => {
     shellExec(mainWindow, command);
     return { ok: true, from: 'shell:exec' };
   });
 
-  // 处理中断命令的请求
   ipcMain.handle('shell:interrupt', async () => {
     try {
       const child = getCurrentChildProcess();
@@ -30,9 +30,7 @@ export function registerIPCHandlers(mainWindow: BrowserWindow) {
     }
   });
 
-  /**
-   * window操作
-   */
+  // window
   ipcMain.handle('sys:closeWindow', async () => {
     mainWindow.close();
     return { ok: true, status: 'close' };
@@ -64,14 +62,31 @@ export function registerIPCHandlers(mainWindow: BrowserWindow) {
     return { ok: true };
   });
 
+  // webdav
+  ipcMain.handle('webdav:start', async (_event, vaultPath: string, port?: number) => {
+    const status = await startServer(vaultPath, port || 8080);
+    mainWindow.webContents.send('webdav:statusChanged', status);
+    return { ok: true, status };
+  });
+
+  ipcMain.handle('webdav:stop', async () => {
+    await stopServer();
+    const status = getStatus();
+    mainWindow.webContents.send('webdav:statusChanged', status);
+    return { ok: true, status };
+  });
+
+  ipcMain.handle('webdav:status', async () => {
+    return { ok: true, status: getStatus() };
+  });
+
   /// --------------------------------------- on ---------------------------------------
 
-  // 当渲染器加载完毕，发送一次测试消息（渲染器会订阅 `push-from-main`）
   mainWindow.webContents.on('did-finish-load', () => {
     try {
-      mainWindow.webContents.send('push-from-main', { text: 'hello from main (did-finish-load)' });
+      mainWindow.webContents.send('webdav:statusChanged', getStatus());
     } catch (e) {
-      console.warn('failed to send `push-from-main`', e);
+      console.warn('failed to send webdav:statusChanged', e);
     }
   });
 }
