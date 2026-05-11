@@ -169,3 +169,11 @@ v0.2.0 implementation complete. Three features delivered: vault preset managemen
 - Test vault hot-switch with actual Tailscale remote sync
 - Consider port customization UI
 - Consider diff editor with editing capability
+
+## Session Update — v0.2.0 Release
+
+- Bumped version to 0.2.0 in package.json
+- Added README.md — setup instructions, tech stack, how sync works
+- Tagged `v0.2.0` and created GitHub release
+- Release artifact: `Obsidian LAN Sync Bridge-win32-x64-0.1.0.zip` (Electron Forge make output)
+- Release published at https://github.com/NAOXUAN4/obsidian-lan-sync-bridge/releases/tag/v0.2.0
