@@ -14,8 +14,7 @@ export const useTabStore = defineStore('tab', () => {
     editorSessions.value.map(session => ({
       id: session.id,
       type: session.type,
-      // name: session.name // 未来可能有标题
-      // isDirty: session.isDirty // 未来可能有未保存状态
+      name: session.name || session.type,
     }))
   );
 

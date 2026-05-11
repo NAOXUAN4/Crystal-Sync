@@ -13,21 +13,24 @@ export class EditorSession {
   constructor(type: EditorSessionType, args?: Record<string, any>) {
     this.#type = type;
     this.#id = crypto.randomUUID();
+    const name = args?.name as string | undefined;
 
     if (type == 'Terminal') {
-      this.#editorInstance = new TerminalEditor(this.#id);
+      this.#editorInstance = new TerminalEditor(this.#id, name);
     } else if (type == 'WebView') {
-      //TODO: WebViewInstance
       console.log('WebViewInstance');
     } else if (type == 'Extension') {
-      //TODO: ExtensionInstance
       if (args?.component) {
-        this.#editorInstance = new ExtensionEditor(this.#id, args.component, args.props || {});
+        this.#editorInstance = new ExtensionEditor(this.#id, args.component, args.props || {}, name);
         console.log('ExtensionInstance created:', this.#id);
       } else {
         console.error('Extension args missing component:', args);
       }
     }
+  }
+
+  get name() {
+    return this.#editorInstance?.name || this.#type;
   }
 
   get id() {

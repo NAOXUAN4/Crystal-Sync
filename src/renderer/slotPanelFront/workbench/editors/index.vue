@@ -1,11 +1,11 @@
 <template>
-  <div class="h-full w-full bg-white/40">
+  <div class="h-full w-full bg-[#141414]">
     <!-- <TerminalEditor /> -->
     <div
       v-for="(_, index) in editorlist"
       :key="index"
       :ref="el => setRef(el, index)"
-      class="terminal-editor"
+      class="terminal-editor h-full"
     />
   </div>
 </template>

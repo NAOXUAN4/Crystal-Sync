@@ -22,8 +22,8 @@ export class TerminalEditor extends EditorPanel {
   #removeListeners: Set<() => void> = new Set();
   #fitAddon: FitAddon | null = null;
 
-  constructor(id: string) {
-    super(id, 'terminal');
+  constructor(id: string, name?: string) {
+    super(id, 'terminal', name || 'Terminal');
   }
 
   create(container: HTMLElement): void {

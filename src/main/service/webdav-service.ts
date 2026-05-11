@@ -1,33 +1,59 @@
 import { WebDAVServer } from 'webdav-server/lib/index.v2';
 import { networkInterfaces } from 'os';
-import { ConflictFileSystem, ConflictEvent } from './conflict-file-system';
-import { SyncRecordStore } from './sync-record-store';
+import { VersionedFileSystem, SnapshotEvent } from './versioned-file-system';
+
+export interface CategorizedIPs {
+  lan: string[];
+  tailscale: string[];
+  other: string[];
+}
 
 export interface WebDAVStatus {
   running: boolean;
   port: number;
   vaultPath: string;
-  localIPs: string[];
+  ips: CategorizedIPs;
+  error?: string;
 }
 
-export type ConflictHandler = (event: ConflictEvent) => void;
+export type SnapshotHandler = (event: SnapshotEvent) => void;
 
 let server: WebDAVServer | null = null;
-let conflictFS: ConflictFileSystem | null = null;
+let versionedFS: VersionedFileSystem | null = null;
 let currentPort = 8080;
 let currentVaultPath = '';
+let storedSnapshotCallback: SnapshotHandler | undefined;
 
-function getLocalIPs(): string[] {
-  const ips: string[] = [];
+function getLocalIPs(): CategorizedIPs {
+  const result: CategorizedIPs = { lan: [], tailscale: [], other: [] };
   const interfaces = networkInterfaces();
   for (const name of Object.keys(interfaces)) {
     for (const iface of interfaces[name] || []) {
       if (iface.family === 'IPv4' && !iface.internal) {
-        ips.push(iface.address);
+        const addr = iface.address;
+        if (addr.startsWith('100.')) {
+          result.tailscale.push(addr);
+        } else if (/^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.)/.test(addr)) {
+          result.lan.push(addr);
+        } else {
+          result.other.push(addr);
+        }
       }
     }
   }
-  return ips;
+  return result;
+}
+
+export function getCurrentVaultPath(): string {
+  return currentVaultPath;
+}
+
+export function getCurrentPort(): number {
+  return currentPort;
+}
+
+export function getStoredSnapshotCallback(): SnapshotHandler | undefined {
+  return storedSnapshotCallback;
 }
 
 export function getStatus(): WebDAVStatus {
@@ -35,40 +61,56 @@ export function getStatus(): WebDAVStatus {
     running: server !== null,
     port: currentPort,
     vaultPath: currentVaultPath,
-    localIPs: getLocalIPs(),
+    ips: getLocalIPs(),
   };
 }
 
 export async function startServer(
   vaultPath: string,
   port: number = 8080,
-  onConflict?: ConflictHandler,
+  onSnapshot?: SnapshotHandler,
 ): Promise<WebDAVStatus> {
   if (server) {
     await stopServer();
+    // Wait for OS to release the port before rebinding
+    await new Promise(r => setTimeout(r, 500));
   }
 
-  const syncStore = new SyncRecordStore(vaultPath);
-  conflictFS = new ConflictFileSystem(vaultPath, syncStore);
+  versionedFS = new VersionedFileSystem(vaultPath);
 
-  if (onConflict) {
-    conflictFS.setOnConflict(onConflict);
+  storedSnapshotCallback = onSnapshot;
+  if (onSnapshot) {
+    versionedFS.setOnSnapshot(onSnapshot);
   }
 
   server = new WebDAVServer({
-    rootFileSystem: conflictFS,
+    rootFileSystem: versionedFS,
     port,
     requireAuthentification: false,
     serverName: 'Obsidian LAN Sync Bridge',
   });
 
-  return new Promise((resolve) => {
-    server!.start(port, () => {
-      currentPort = port;
-      currentVaultPath = vaultPath;
-      console.log(`WebDAV server started on port ${port}, serving ${vaultPath}`);
-      resolve(getStatus());
-    });
+  return new Promise((resolve, reject) => {
+    try {
+      server!.start(port, () => {
+        currentPort = port;
+        currentVaultPath = vaultPath;
+        console.log(`WebDAV server started on port ${port}, serving ${vaultPath}`);
+        resolve(getStatus());
+      });
+    } catch (e: any) {
+      server = null;
+      versionedFS = null;
+      if (e.code === 'EADDRINUSE') {
+        resolve({
+          running: false, port, vaultPath,
+          ips: { lan: [], tailscale: [], other: [] },
+          error: `Port ${port} is already in use`,
+        });
+      } else {
+        reject(e);
+      }
+    }
     setTimeout(() => {
       if (server) {
         currentPort = port;
@@ -82,19 +124,17 @@ export async function startServer(
 export async function stopServer(): Promise<void> {
   if (!server) return;
 
+  const srv = server;
+  server = null;
+  versionedFS = null;
+  currentVaultPath = '';
+
   return new Promise((resolve) => {
-    server!.stop(() => {
-      server = null;
-      conflictFS = null;
-      currentVaultPath = '';
+    srv.stop(() => {
       console.log('WebDAV server stopped');
       resolve();
     });
-    setTimeout(() => {
-      server = null;
-      conflictFS = null;
-      currentVaultPath = '';
-      resolve();
-    }, 1000);
+    // Safety timeout in case stop callback never fires
+    setTimeout(() => resolve(), 5000);
   });
 }

@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import path from 'node:path';
 import tailwindcss from '@tailwindcss/vite';
+import monacoEditorPlugin from 'vite-plugin-monaco-editor';
 
 export default async () => {
   const { default: vue } = await import('@vitejs/plugin-vue');
@@ -14,6 +15,8 @@ export default async () => {
         },
       }),
       tailwindcss(),
+      // @ts-ignore
+      monacoEditorPlugin({ languageWorkers: ['editorWorkerService'] }),
     ],
     resolve: {
       alias: {
@@ -24,7 +27,7 @@ export default async () => {
     root: path.resolve(__dirname, 'src/renderer/slotPanelFront'),
     server: { port: 5173 },
     build: {
-      outDir: path.resolve(__dirname, '.vite', 'renderer'),
+      outDir: '../../../.vite/renderer',
       emptyOutDir: true,
     },
   });

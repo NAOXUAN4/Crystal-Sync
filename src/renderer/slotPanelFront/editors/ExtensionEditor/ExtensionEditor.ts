@@ -8,8 +8,8 @@ export class ExtensionEditor extends EditorPanel {
   #component: Component;
   #initialProps: Record<string, any>;
 
-  constructor(id: string, component: Component, props: Record<string, any> = {}) {
-    super(id, 'extension');
+  constructor(id: string, component: Component, props: Record<string, any> = {}, name?: string) {
+    super(id, 'extension', name || 'Extension');
     this.#component = component;
     this.#initialProps = props;
   }

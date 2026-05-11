@@ -1,10 +1,12 @@
 export abstract class EditorPanel {
   id: string;
   type: string;
+  name: string;
   isMounted = false;
-  constructor(id: string, type: string) {
+  constructor(id: string, type: string, name?: string) {
     this.id = id;
     this.type = type;
+    this.name = name || type;
   }
 
   //创建
