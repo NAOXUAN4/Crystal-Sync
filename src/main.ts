@@ -13,9 +13,13 @@ let tray: Tray | null = null;
 let isQuitting = false;
 
 function createTrayIcon(): Tray {
-  const iconPath = app.isPackaged
-    ? path.join(process.resourcesPath, 'assets', 'icon', 'favicon.ico')
-    : path.resolve(__dirname, '../../assets/icon/favicon.ico');
+  let iconPath: string;
+  if (app.isPackaged) {
+    // exe is at <app>/Crystal Sync.exe, resources at <app>/resources/
+    iconPath = path.join(path.dirname(app.getPath('exe')), 'resources', 'favicon.ico');
+  } else {
+    iconPath = path.resolve(__dirname, '../../assets/icon/favicon.ico');
+  }
 
   let icon: Electron.NativeImage;
   try {
