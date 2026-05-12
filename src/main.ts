@@ -13,21 +13,30 @@ let tray: Tray | null = null;
 let isQuitting = false;
 
 function createTrayIcon(): Tray {
-  // Create a simple 16x16 status indicator icon (green dot)
-  const size = 16;
-  const canvas = Buffer.alloc(size * size * 4);
-  for (let i = 0; i < size * size; i++) {
-    const cx = (i % size) - size / 2;
-    const cy = Math.floor(i / size) - size / 2;
-    const r = Math.sqrt(cx * cx + cy * cy);
-    if (r < size / 2 - 1) {
-      canvas[i * 4] = 0x2f;     // R
-      canvas[i * 4 + 1] = 0xa7; // G
-      canvas[i * 4 + 2] = 0x00; // B
-      canvas[i * 4 + 3] = 0xff; // A
+  const iconPath = app.isPackaged
+    ? path.join(process.resourcesPath, 'assets', 'icon', 'favicon.ico')
+    : path.resolve(__dirname, '../../assets/icon/favicon.ico');
+
+  let icon: Electron.NativeImage;
+  try {
+    icon = nativeImage.createFromPath(iconPath);
+    if (icon.isEmpty()) throw new Error('icon empty');
+  } catch {
+    // Fallback green dot in case the icon file can't be loaded
+    const size = 16;
+    const canvas = Buffer.alloc(size * size * 4);
+    for (let i = 0; i < size * size; i++) {
+      const cx = (i % size) - size / 2;
+      const cy = Math.floor(i / size) - size / 2;
+      if (Math.sqrt(cx * cx + cy * cy) < size / 2 - 1) {
+        canvas[i * 4] = 0x2f;
+        canvas[i * 4 + 1] = 0xa7;
+        canvas[i * 4 + 2] = 0x00;
+        canvas[i * 4 + 3] = 0xff;
+      }
     }
+    icon = nativeImage.createFromBuffer(canvas, { width: size, height: size });
   }
-  const icon = nativeImage.createFromBuffer(canvas, { width: size, height: size });
 
   const trayInstance = new Tray(icon);
   trayInstance.setToolTip('Obsidian LAN Sync Bridge');
