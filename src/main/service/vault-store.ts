@@ -14,7 +14,7 @@ interface VaultData {
   presets: VaultPreset[];
 }
 
-const STORE_DIR = path.join(os.homedir(), '.obsidian-lan-sync-bridge');
+const STORE_DIR = path.join(os.homedir(), '.crystal-sync');
 const STORE_PATH = path.join(STORE_DIR, 'vaults.json');
 
 function ensureDir(): void {

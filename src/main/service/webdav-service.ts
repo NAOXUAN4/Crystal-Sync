@@ -87,7 +87,7 @@ export async function startServer(
     rootFileSystem: versionedFS,
     port,
     requireAuthentification: false,
-    serverName: 'Obsidian LAN Sync Bridge',
+    serverName: 'Crystal Sync',
   });
 
   return new Promise((resolve, reject) => {

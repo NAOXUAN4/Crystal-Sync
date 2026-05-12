@@ -1,6 +1,6 @@
 {
   "name": "obsidian-lan-sync-bridge",
-  "productName": "Obsidian LAN Sync Bridge",
+  "productName": "Crystal Sync",
   "version": "0.2.0",
   "description": "Local network sync bridge for Obsidian vaults via WebDAV",
   "main": ".vite/build/main.js",

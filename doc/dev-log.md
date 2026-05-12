@@ -102,7 +102,7 @@ v0.2.0 implementation complete. Three features delivered: vault preset managemen
 ### Feature 1: Vault Preset Management
 
 **New Files:**
-- `src/main/service/vault-store.ts` — CRUD for vault presets, persisted to `~/.obsidian-lan-sync-bridge/vaults.json`
+- `src/main/service/vault-store.ts` — CRUD for vault presets, persisted to `~/.crystal-sync/vaults.json`
 - `src/renderer/slotPanelFront/workbench/vaultSwitcher/index.vue` — Vault management panel
 
 **IPC Handlers Added:**
@@ -175,5 +175,5 @@ v0.2.0 implementation complete. Three features delivered: vault preset managemen
 - Bumped version to 0.2.0 in package.json
 - Added README.md — setup instructions, tech stack, how sync works
 - Tagged `v0.2.0` and created GitHub release
-- Release artifact: `Obsidian LAN Sync Bridge-win32-x64-0.1.0.zip` (Electron Forge make output)
-- Release published at https://github.com/NAOXUAN4/obsidian-lan-sync-bridge/releases/tag/v0.2.0
+- Release artifact: `Crystal Sync-win32-x64-0.1.0.zip` (Electron Forge make output)
+- Release published at https://github.com/NAOXUAN4/crystal-sync/releases/tag/v0.2.0

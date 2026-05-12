@@ -39,7 +39,7 @@ function createTrayIcon(): Tray {
   }
 
   const trayInstance = new Tray(icon);
-  trayInstance.setToolTip('Obsidian LAN Sync Bridge');
+  trayInstance.setToolTip('Crystal Sync');
 
   const contextMenu = Menu.buildFromTemplate([
     {

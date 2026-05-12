@@ -1,4 +1,4 @@
-# Obsidian LAN Sync Bridge — 项目文档
+# Crystal Sync — 项目文档
 
 ## 概述
 
@@ -49,7 +49,7 @@
 ## 项目结构
 
 ```
-obsidian-lan-sync-bridge/
+crystal-sync/
 ├── src/
 │   ├── main/                          # Electron 主进程
 │   │   ├── main.ts                    # 入口：托盘、窗口、IPC 注册
@@ -172,7 +172,7 @@ Linear Dark 主题：
 ### Feature 1: Vault 预设管理 ✓
 
 - 保存多个 vault 预设（路径 + 自定义名称）
-- 持久化到 `~/.obsidian-lan-sync-bridge/vaults.json`
+- 持久化到 `~/.crystal-sync/vaults.json`
 - 热切换：选中预设后若服务器运行中则自动重启
 - SyncPanel 显示当前 vault 名称
 - Sidebar FolderOpen 图标 → VaultSwitcher 面板
@@ -227,7 +227,7 @@ interface VaultPreset {
   path: string;
   createdAt: number;
 }
-// ~/.obsidian-lan-sync-bridge/vaults.json → { activeId, presets[] }
+// ~/.crystal-sync/vaults.json → { activeId, presets[] }
 
 interface CategorizedIPs {
   lan: string[];       // 192.168.x.x
