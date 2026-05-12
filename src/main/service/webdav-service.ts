@@ -2,10 +2,15 @@ import { WebDAVServer } from 'webdav-server/lib/index.v2';
 import { networkInterfaces } from 'os';
 import { VersionedFileSystem, SnapshotEvent } from './versioned-file-system';
 
+export interface IPEntry {
+  address: string;
+  ifName: string;
+}
+
 export interface CategorizedIPs {
-  lan: string[];
-  tailscale: string[];
-  other: string[];
+  lan: IPEntry[];
+  tailscale: IPEntry[];
+  other: IPEntry[];
 }
 
 export interface WebDAVStatus {
@@ -31,12 +36,13 @@ function getLocalIPs(): CategorizedIPs {
     for (const iface of interfaces[name] || []) {
       if (iface.family === 'IPv4' && !iface.internal) {
         const addr = iface.address;
+        const entry: IPEntry = { address: addr, ifName: name };
         if (addr.startsWith('100.')) {
-          result.tailscale.push(addr);
+          result.tailscale.push(entry);
         } else if (/^(192\.168\.|10\.|172\.(1[6-9]|2[0-9]|3[01])\.)/.test(addr)) {
-          result.lan.push(addr);
+          result.lan.push(entry);
         } else {
-          result.other.push(addr);
+          result.other.push(entry);
         }
       }
     }
@@ -104,7 +110,7 @@ export async function startServer(
       if (e.code === 'EADDRINUSE') {
         resolve({
           running: false, port, vaultPath,
-          ips: { lan: [], tailscale: [], other: [] },
+          ips: { lan: [] as IPEntry[], tailscale: [], other: [] },
           error: `Port ${port} is already in use`,
         });
       } else {

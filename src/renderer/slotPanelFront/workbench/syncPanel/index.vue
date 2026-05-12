@@ -18,24 +18,27 @@
       <!-- LAN -->
       <div v-if="status.ips.lan.length">
         <div class="mb-1 text-[10px] text-[#888]">LAN</div>
-        <div v-for="ip in status.ips.lan" :key="ip" class="font-mono text-sm text-[#ccc]">
-          http://{{ ip }}:{{ status.port }}
+        <div v-for="ip in status.ips.lan" :key="ip.address" class="font-mono text-sm text-[#ccc]">
+          http://{{ ip.address }}:{{ status.port }}
+          <span class="text-[11px] text-[#555] ml-1.5 font-sans">{{ ip.ifName }}</span>
         </div>
       </div>
 
       <!-- Tailscale -->
       <div v-if="status.ips.tailscale.length">
         <div class="mb-1 mt-2 text-[10px] text-[#888]">Tailscale</div>
-        <div v-for="ip in status.ips.tailscale" :key="ip" class="font-mono text-sm text-[#ccc]">
-          http://{{ ip }}:{{ status.port }}
+        <div v-for="ip in status.ips.tailscale" :key="ip.address" class="font-mono text-sm text-[#ccc]">
+          http://{{ ip.address }}:{{ status.port }}
+          <span class="text-[11px] text-[#555] ml-1.5 font-sans">{{ ip.ifName }}</span>
         </div>
       </div>
 
       <!-- Other -->
       <div v-if="status.ips.other.length">
         <div class="mb-1 mt-2 text-[10px] text-[#888]">Other</div>
-        <div v-for="ip in status.ips.other" :key="ip" class="font-mono text-sm text-[#555]">
-          http://{{ ip }}:{{ status.port }}
+        <div v-for="ip in status.ips.other" :key="ip.address" class="font-mono text-sm text-[#555]">
+          http://{{ ip.address }}:{{ status.port }}
+          <span class="text-[11px] text-[#555] ml-1.5 font-sans">{{ ip.ifName }}</span>
         </div>
       </div>
 
@@ -62,10 +65,15 @@
 <script setup lang="ts">
 import { reactive, ref, onMounted, onBeforeUnmount } from 'vue';
 
+interface IPEntry {
+  address: string;
+  ifName: string;
+}
+
 interface CategorizedIPs {
-  lan: string[];
-  tailscale: string[];
-  other: string[];
+  lan: IPEntry[];
+  tailscale: IPEntry[];
+  other: IPEntry[];
 }
 
 interface WebDAVStatus {
