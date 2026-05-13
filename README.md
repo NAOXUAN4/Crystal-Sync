@@ -1,3 +1,5 @@
+<p align="center"><img src="assets/icon/favicon.ico" width="64"></p>
+
 # Crystal Sync
 
 A Windows desktop app that runs a WebDAV server on your PC, so you can sync an Obsidian vault with your phone over the local network (or Tailscale) using the [Remotely Save](https://github.com/remotely-save/remotely-save) plugin.
